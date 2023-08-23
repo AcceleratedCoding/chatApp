@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <title>WhatsApp Chat App</title>
+</head>
+
+<body>
+  <div class="chat-container">
+    <div class="chat-sidebar">
+      <div class="user-profile">
+        <h3>Your Name: <span id="currentUserName"></span></h3>
+      </div>
+      <div class="chat-list">
+        <h3>Connected Users</h3>
+        <ul id="userList"></ul>
+      </div>
+    </div>
+    <div class="chat-main">
+      <div class="chat-header">
+        <!-- Chat header content -->
+      </div>
+      <div class="chat-messages">
+        <ul id="messages"></ul> <!-- Display chat messages here -->
+      </div>
+      <div class="chat-input">
+        <textarea id="input" placeholder="Type your message"></textarea>
+        <button id="sendButton">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(function () {
+      const socket = io();
+      
+      const userName = prompt('Please enter your name:');
+      socket.emit('user name', userName);
+
+      $('#currentUserName').text(userName);
+
+      // Update connected user list
+      socket.on('user list', function (users) {
+        $('#userList').empty();
+        users.forEach(user => {
+          $('#userList').append($('<li>').text(user.name));
+        });
+      });
+
+      $('#sendButton').click(function () {
+        const message = $('#input').val();
+        socket.emit('chat message', message);
+        $('#input').val('');
+      });
+
+      socket.on('chat message', function (msg) {
+        $('#messages').append($('<li>').text(msg.text)); // Extract the text property
+      });
+    });
+  </script>
+</body>
+
+</html>
