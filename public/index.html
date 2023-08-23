@@ -67,14 +67,26 @@
       $('#sendButton').click(function () {
         const message = $('#input').val();
         if (message && currentChatUser) {
+          const senderName = $('#currentUserName').text();
           socket.emit('private message', { targetUserId: currentChatUser, text: message });
+          $('#chatMessages').append($('<div class="message">').text(`${senderName}: ${message}`));
           $('#input').val('');
         }
       });
 
       // Display private messages in both sender and receiver chat areas
       socket.on('private message', function (data) {
-        $('#chatMessages').append($('<div class="message">').text(`${data.senderName}: ${data.text}`));
+        if (data.senderName === $('#currentChatUser').text()) {
+          $('#chatMessages').append($('<div class="message">').text(`${data.senderName}: ${data.text}`));
+        }
+      });
+
+      // Display private messages when switching chats
+      socket.on('private messages', function (messages) {
+        $('#chatMessages').empty();
+        messages.forEach(message => {
+          $('#chatMessages').append($('<div class="message">').text(`${message.senderName}: ${message.text}`));
+        });
       });
     });
   </script>
