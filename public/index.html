@@ -10,6 +10,15 @@
 
 <body>
   <div class="chat-container">
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span id="closeModal" class="close">&times;</span>
+        <h4>Available Commands</h4>
+        <p>/help - show this message</p>
+        <p>/random - print a random number</p>
+        <p>/clear - clear the chat</p>
+      </div>
+    </div>
     <div class="chat-sidebar">
       <div class="user-profile">
         <h3>Your Name: <span id="currentUserName"></span></h3>
@@ -77,17 +86,29 @@
       // Send private messages
       $('#sendButton').click(function () {
         const rawMessage = $('#input').val();
-        if (!currentChatUser) {
-          alert('Please select a user to chat with.');
-          return;
-        }
-        if (rawMessage) {
-          const senderName = $('#currentUserName').text();
-          const message = replaceEmojis(rawMessage);
-          socket.emit('private message', { targetUserId: currentChatUser, text: message });
-          $('#chatMessages').append($('<div class="message">').text(`${senderName}: ${message}`));
+        if (['/help', '/clear', '/random'].includes(rawMessage.trim())) {
+          if (rawMessage == '/help') {
+            document.getElementById("modal").style.display = "block";
+          } else if (rawMessage == '/clear') {
+            $('#chatMessages').empty();
+          } else {
+            $('#chatMessages').append($('<div class="message">').text(`Here's your random number ${Math.random()}`));
+          }
           $('#input').val('');
+        } else {
+          if (!currentChatUser) {
+            alert('Please select a user to chat with.');
+            return;
+          }
+          if (rawMessage) {
+            const senderName = $('#currentUserName').text();
+            const message = replaceEmojis(rawMessage);
+            socket.emit('private message', { targetUserId: currentChatUser, text: message });
+            $('#chatMessages').append($('<div class="message">').text(`${senderName}: ${message}`));
+            $('#input').val('');
+          }
         }
+
       });
 
       // Display private messages in both sender and receiver chat areas
@@ -114,6 +135,16 @@
         text = text.replace(/like/gi, '❣️');
         text = text.replace(/congratulations/gi, '🎉');
         return text;
+      }
+    });
+
+    document.getElementById("closeModal").addEventListener("click", function () {
+      document.getElementById("modal").style.display = "none";
+    });
+
+    window.addEventListener("click", function (event) {
+      if (event.target === document.getElementById("modal")) {
+        document.getElementById("modal").style.display = "none";
       }
     });
   </script>
