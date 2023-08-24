@@ -50,7 +50,9 @@
       socket.on('user list', function (users) {
         $('#userList').empty();
         users.forEach(user => {
-          $('#userList').append($('<li>').text(user.name).data('userId', user.socketId));
+          if (user.socketId !== socket.id) {
+            $('#userList').append($('<li>').text(user.name).data('userId', user.socketId));
+          }
         });
       });
 
