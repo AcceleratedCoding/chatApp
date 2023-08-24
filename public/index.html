@@ -68,7 +68,11 @@
       // Send private messages
       $('#sendButton').click(function () {
         const message = $('#input').val();
-        if (message && currentChatUser) {
+        if (!currentChatUser) {
+          alert('Please select a user to chat with.');
+          return;
+        }
+        if (message) {
           const senderName = $('#currentUserName').text();
           socket.emit('private message', { targetUserId: currentChatUser, text: message });
           $('#chatMessages').append($('<div class="message">').text(`${senderName}: ${message}`));
