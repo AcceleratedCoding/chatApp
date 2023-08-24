@@ -67,13 +67,14 @@
 
       // Send private messages
       $('#sendButton').click(function () {
-        const message = $('#input').val();
+        const rawMessage = $('#input').val();
         if (!currentChatUser) {
           alert('Please select a user to chat with.');
           return;
         }
-        if (message) {
+        if (rawMessage) {
           const senderName = $('#currentUserName').text();
+          const message = replaceEmojis(rawMessage);
           socket.emit('private message', { targetUserId: currentChatUser, text: message });
           $('#chatMessages').append($('<div class="message">').text(`${senderName}: ${message}`));
           $('#input').val('');
@@ -94,6 +95,17 @@
           $('#chatMessages').append($('<div class="message">').text(`${message.senderName}: ${message.text}`));
         });
       });
+
+      // Function to replace emojis
+      function replaceEmojis(text) {
+        text = text.replace(/hey/gi, '🙋‍♂️');
+        text = text.replace(/react/gi, '⚛️');
+        text = text.replace(/woah/gi, '😲');
+        text = text.replace(/lol/gi, '😂');
+        text = text.replace(/like/gi, '❣️');
+        text = text.replace(/congratulations/gi, '🎉');
+        return text;
+      }
     });
   </script>
 </body>
