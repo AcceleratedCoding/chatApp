@@ -39,11 +39,14 @@
     $(function () {
       const socket = io();
       let currentChatUser = null;
+      let userName = '';
 
-      // Request user's name
-      const userName = prompt('Please enter your name:');
+      // Prompt user for name until a name is entered
+      while (!userName) {
+        userName = prompt('Please enter your name:');
+      }
+
       socket.emit('user name', userName);
-
       $('#currentUserName').text(userName);
 
       // Update connected user list
