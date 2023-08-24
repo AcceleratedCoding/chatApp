@@ -51,7 +51,11 @@
         $('#userList').empty();
         users.forEach(user => {
           if (user.socketId !== socket.id) {
-            $('#userList').append($('<li>').text(user.name).data('userId', user.socketId));
+            const listItem = $('<li>').text(user.name).data('userId', user.socketId);
+            if (user.socketId === currentChatUser) {
+              listItem.addClass('selected');
+            }
+            $('#userList').append(listItem);
           }
         });
       });
@@ -60,6 +64,8 @@
       $('#userList').on('click', 'li', function () {
         const targetUserId = $(this).data('userId');
         currentChatUser = targetUserId;
+        $('#userList li').removeClass('selected');
+        $(this).addClass('selected');
         $('#currentChatUser').text($(this).text());
         $('#chatMessages').empty();
         socket.emit('private chat', targetUserId);

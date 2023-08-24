@@ -49,13 +49,18 @@ body {
     font-size: 14px;
     margin-bottom: 8px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    padding: 8px;
+    border-radius: 5px;
+    transition: background-color 0.3s, border 0.3s;
 }
 
 .chat-list li:hover {
     background-color: #444;
-    padding: 8px;
-    border-radius: 5px;
+}
+
+.chat-list li.selected {
+    background-color: #222;
+    border: 2px solid #4caf50;
 }
 
 .chat-main {
@@ -101,6 +106,8 @@ body {
     border-radius: 5px;
     background-color: #444;
     color: #fff;
+    resize: none;
+    /* Prevent textarea resizing */
 }
 
 #sendButton {
@@ -111,6 +118,8 @@ body {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+    margin-left: 10px;
+    /* Add margin to the left of the button */
 }
 
 #sendButton:hover {
